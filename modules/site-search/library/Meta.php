@@ -10,7 +10,7 @@ namespace SiteSearch\Library;
 
 class Meta
 {
-    static function single(){
+    static function single(string $query=''){
         $result = [
             'head' => [],
             'foot' => []
@@ -22,10 +22,16 @@ class Meta
 
         $site_setting = module_exists('site-setting');
 
+        $page = \Mim::$app->req->getQuery('page');
+
         $std_metas = ['title','description','keywords'];
         $meta = (object)[];
-        foreach($std_metas as $name)
+        foreach($std_metas as $name){
             $meta->$name = ($site_setting?\Mim::$app->setting->{'search_'.$name}:NULL) ?? $deff;
+            $meta->$name = str_replace('(:query)', $query, $meta->$name);
+            if($page && $page > 1)
+                $meta->$name.= ' Page ' . $page;
+        }
 
         $result['head'] = [
             'description'       => $meta->description,

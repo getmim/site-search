@@ -12,8 +12,10 @@ use SiteSearch\Library\Meta;
 class SearchController extends \Site\Controller
 {
     public function indexAction(){
+        $query = $this->req->getQuery('q');
+        
         $params = [
-            'meta'    => Meta::single(),
+            'meta'    => Meta::single($query),
             'result'  => []
         ];
 
